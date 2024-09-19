@@ -1,17 +1,21 @@
-import { forwardRef, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { NotFoundError } from 'rxjs';
+import { UserDto } from 'src/user/dto/user.dto';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 
 
 @Injectable()
 export class AuthService {
+  logger:Logger
   constructor(
     @Inject(forwardRef(() => UserService)) 
       private userService: UserService,
-      
-  ){ }
+      private jwtService: JwtService,
+  ){
+    this.logger = new Logger(AuthService.name)
+   }
 
   async comparePassword (password: string, hashpassword: string) : Promise<boolean> {
     return new Promise((resolve, reject) =>{
@@ -33,6 +37,16 @@ export class AuthService {
     })
   }
 
+
+  async generateJwtToekn(user: any) {
+    const payload = {
+      email: user.email
+    };
+
+    return {
+      access_token: this.jwtService.sign(payload),
+    }
+  }
 
   async validateUser(email: string, password: string) : Promise<User> {
     const query = { email: email };
