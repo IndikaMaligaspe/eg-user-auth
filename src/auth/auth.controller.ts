@@ -25,7 +25,7 @@ export class AuthController {
   }
 
 
-  @Get('dashboard')
+  @Get('validate')
   @UseGuards(JwtAuthGuard)
   async getUser(@Request() req): Promise<any> {
     return req.user;
