@@ -16,11 +16,10 @@ import {MongooseModule} from '@nestjs/mongoose'
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
-        uri: config.get<string>('MONGODB_URI'), // Loaded from .ENV
+        uri: config.get<string>('MONGODB_URI'), 
       })
     }),
   ],
-    // MongooseModule.forRoot('mongodb://localhost:27017/eg-db')],
   controllers: [AppController],
   providers: [AppService],
 })
